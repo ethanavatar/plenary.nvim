@@ -1,4 +1,5 @@
 local path = require("plenary.path").path
+local system = require("plenary.system")
 
 local M = {}
 
@@ -11,7 +12,7 @@ M.strdisplaywidth = (function()
     return vim.fn.strdisplaywidth(str, col)
   end
 
-  if jit and path.sep ~= [[\]] then
+  if jit and not system.is_windows() then
     local ffi = require "ffi"
     ffi.cdef [[
       typedef unsigned char char_u;
@@ -45,7 +46,7 @@ M.strcharpart = (function()
     return vim.fn.strcharpart(str, nchar, charlen)
   end
 
-  if jit and path.sep ~= [[\]] then
+  if jit and not system.is_windows() then
     local ffi = require "ffi"
     ffi.cdef [[
       typedef unsigned char char_u;

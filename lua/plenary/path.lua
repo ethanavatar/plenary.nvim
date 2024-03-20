@@ -7,6 +7,7 @@ local bit = require "plenary.bit"
 local uv = vim.loop
 
 local F = require "plenary.functional"
+local S = require "plenary.system"
 
 local S_IF = {
   -- S_IFDIR  = 0o040000  # directory
@@ -21,7 +22,8 @@ path.home = vim.loop.os_homedir()
 path.sep = (function()
   if jit then
     local os = string.lower(jit.os)
-    if os ~= "windows" then
+    --if os ~= "windows" then
+    if not S.is_windows() and not S.uses_shellslash() then
       return "/"
     else
       return "\\"
@@ -32,7 +34,7 @@ path.sep = (function()
 end)()
 
 path.root = (function()
-  if path.sep == "/" then
+  if not S.is_windows() then
     return function()
       return "/"
     end
@@ -55,7 +57,7 @@ local concat_paths = function(...)
 end
 
 local function is_root(pathname)
-  if path.sep == "\\" then
+  if S.is_windows() then
     return string.match(pathname, "^[A-Z]:\\?$")
   end
   return pathname == "/"
@@ -77,10 +79,20 @@ local is_uri = function(filename)
 end
 
 local is_absolute = function(filename, sep)
-  if sep == "\\" then
-    return string.match(filename, "^[%a]:\\.*$") ~= nil
+  local _sep = sep
+  if S.uses_shellslash() then
+    _sep = "/"
   end
-  return string.sub(filename, 1, 1) == sep
+
+  local ret = false
+
+  if S.is_windows() then
+    ret = string.match(filename, "^[%a]:" .. _sep .. ".*$") ~= nil
+  else
+    ret = string.sub(filename, 1, 1) == sep
+  end
+
+  return ret
 end
 
 local function _normalize_path(filename, cwd)
@@ -103,7 +115,7 @@ local function _normalize_path(filename, cwd)
     local split_without_disk_name = function(filename_local)
       local parts = _split_by_separator(filename_local)
       -- Remove disk name part on Windows
-      if path.sep == "\\" and is_abs then
+      if S.is_windows() and is_abs then
         table.remove(parts, 1)
       end
       return parts
@@ -489,7 +501,7 @@ function Path:mkdir(opts)
       for _, dir in ipairs(dirs) do
         if dir ~= "" then
           local joined = concat_paths(processed, dir)
-          if processed == "" and self._sep == "\\" then
+          if processed == "" and S.is_windows() then
             joined = dir
           end
           local stat = uv.fs_stat(joined) or {}
