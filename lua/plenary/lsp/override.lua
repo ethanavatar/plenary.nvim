@@ -8,11 +8,11 @@ M._original_functions = {}
 --- @param method string
 --- @param new_function function
 function M.override(method, new_function)
-  if M._original_functions[method] == nil then
-    M._original_functions[method] = vim.lsp.callbacks[method]
-  end
+    if M._original_functions[method] == nil then
+        M._original_functions[method] = vim.lsp.callbacks[method]
+    end
 
-  vim.lsp.callbacks[method] = new_function
+    vim.lsp.callbacks[method] = new_function
 end
 
 --- Get the original method callback
@@ -20,11 +20,11 @@ end
 ---
 --- @param method string
 function M.get_original_function(method)
-  if M._original_functions[method] == nil then
-    M._original_functions[method] = vim.lsp.callbacks[method]
-  end
+    if M._original_functions[method] == nil then
+        M._original_functions[method] = vim.lsp.callbacks[method]
+    end
 
-  return M._original_functions[method]
+    return M._original_functions[method]
 end
 
 return M

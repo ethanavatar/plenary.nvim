@@ -1,4 +1,4 @@
-local a = require "plenary.async_lib.async"
+local a = require('plenary.async_lib.async')
 
 local M = {}
 
@@ -9,7 +9,7 @@ M.buf_request = a.wrap(vim.lsp.buf_request, 4)
 
 --This was recently merged into master so we just check if it is there
 if vim.lsp.buf_request_all ~= nil then
-  M.buf_request_all = a.wrap(vim.lsp.buf_request_all, 4)
+    M.buf_request_all = a.wrap(vim.lsp.buf_request_all, 4)
 end
 
 return M

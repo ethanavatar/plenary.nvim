@@ -18,29 +18,29 @@ function Object:new() end
 ---@param self Object
 ---@return Object
 function Object:extend()
-  local cls = {}
-  for k, v in pairs(self) do
-    if k:find "__" == 1 then
-      cls[k] = v
+    local cls = {}
+    for k, v in pairs(self) do
+        if k:find('__') == 1 then
+            cls[k] = v
+        end
     end
-  end
-  cls.__index = cls
-  cls.super = self
-  setmetatable(cls, self)
-  return cls
+    cls.__index = cls
+    cls.super = self
+    setmetatable(cls, self)
+    return cls
 end
 
 ---Implement a mixin onto this Object.
 ---@param self Object
 ---@param nil ...
 function Object:implement(...)
-  for _, cls in pairs { ... } do
-    for k, v in pairs(cls) do
-      if self[k] == nil and type(v) == "function" then
-        self[k] = v
-      end
+    for _, cls in pairs({ ... }) do
+        for k, v in pairs(cls) do
+            if self[k] == nil and type(v) == 'function' then
+                self[k] = v
+            end
+        end
     end
-  end
 end
 
 ---Checks if the object is an instance
@@ -49,14 +49,14 @@ end
 ---@param T Object
 ---@return boolean
 function Object:is(T)
-  local mt = getmetatable(self)
-  while mt do
-    if mt == T then
-      return true
+    local mt = getmetatable(self)
+    while mt do
+        if mt == T then
+            return true
+        end
+        mt = getmetatable(mt)
     end
-    mt = getmetatable(mt)
-  end
-  return false
+    return false
 end
 
 ---The default tostring implementation for an object.
@@ -64,7 +64,7 @@ end
 ---@param self Object
 ---@return string
 function Object:__tostring()
-  return "Object"
+    return 'Object'
 end
 
 ---You can call the class the initialize it without using `Object:new`.
@@ -72,9 +72,9 @@ end
 ---@param nil ...
 ---@return Object
 function Object:__call(...)
-  local obj = setmetatable({}, self)
-  obj:new(...)
-  return obj
+    local obj = setmetatable({}, self)
+    obj:new(...)
+    return obj
 end
 
 return Object

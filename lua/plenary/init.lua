@@ -1,14 +1,14 @@
 -- Lazy load everything into plenary.
 local plenary = setmetatable({}, {
-  __index = function(t, k)
-    local ok, val = pcall(require, string.format("plenary.%s", k))
+    __index = function(t, k)
+        local ok, val = pcall(require, string.format('plenary.%s', k))
 
-    if ok then
-      rawset(t, k, val)
-    end
+        if ok then
+            rawset(t, k, val)
+        end
 
-    return val
-  end,
+        return val
+    end,
 })
 
 return plenary
